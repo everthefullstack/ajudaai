@@ -1,16 +1,15 @@
-from datetime import timedelta
 from flask import request
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
+from repository.blacklist_repository import Blacklist
 from service.mensagens import *
 
-@jwt_required
+@jwt_required()
 def logout():
 
     try:
-        if request.method == "GET":
-
-            token = get_jwt_identity()
-            return msg_logout_success(create_access_token(identity=token, expires_delta=timedelta(seconds=0)))
+        token = request.headers["Authorization"][7::]
+        blacklist = Blacklist(token=token).create_blacklist()
+        return blacklist
 
     except Exception as error:
         

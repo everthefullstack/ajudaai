@@ -1,8 +1,8 @@
 from flask import request
-from flask.json import jsonify
+from flask_jwt_extended import jwt_required
 from repository.usuario_repository import Usuario
-from service.autenticacao import autenticar
 from service.mensagens import *
+from service.blacklist import blacklist
 
 def create_usuario():
 
@@ -17,18 +17,15 @@ def create_usuario():
                               email=request.get_json()["email"],
                               idade=request.get_json()["idade"],
                               ativo=1).create_usuario()
-            
-            if usuario:
-                return msg_create_success("Usuário")
-            
-            else:
-                return msg_did_nothing("Usuário")
+
+            return usuario
                       
     except Exception as error:
 
         return msg_server_error(error)
 
-@autenticar()
+@jwt_required()
+@blacklist()
 def get_usuarios():
 
     try:
@@ -36,9 +33,7 @@ def get_usuarios():
         if request.method == "GET":
 
             usuarios = Usuario.read_usuarios()
-            
-            if usuarios:
-                return jsonify(usuarios)
+            return usuarios
 
     except Exception as error:
 

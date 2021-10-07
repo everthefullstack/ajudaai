@@ -1,6 +1,5 @@
 from peewee import PrimaryKeyField, CharField, BooleanField, IntegerField
 from model.base_model import BaseModel
-from uuid import uuid1
 
 class UsuarioModel(BaseModel):
 

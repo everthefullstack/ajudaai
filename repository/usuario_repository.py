@@ -1,6 +1,6 @@
 from model.usuario_model import UsuarioModel
 from service.hashes import *
-from playhouse.shortcuts import model_to_dict, dict_to_model
+from service.mensagens import *
 
 class Usuario(UsuarioModel):
 
@@ -9,10 +9,10 @@ class Usuario(UsuarioModel):
         try:
             self.senha = gera_senha(self.senha)
             self.save()
-            return True
+            return msg_create_success("Usuário")
         
         except:
-            return None
+            return msg_create_error("Usuário")
     
     @classmethod
     def read_usuario(cls, idusuario):
@@ -21,29 +21,18 @@ class Usuario(UsuarioModel):
         if usuario:
             return usuario
             
-        return None
+        return False
 
     @classmethod
     def read_usuarios(cls):
 
-        usuarios = cls.select().dicts().get()
-        print(usuarios)
-        if usuarios:
-            return usuarios
+        try:
+            usuarios = cls.select().dicts().get()
+            if usuarios:
+                return msg_read_success(usuarios)
             
-        return None
-
-    def json(self):
-
-        return {
-                'pkcodusuario': self.pkcodusuario,
-                'login': self.login,
-                'nome': self.nome,
-                'telefone': self.telefone,
-                'email': self.email,
-                'idade': self.idade,
-                'ativo': self.admin
-               }
+        except Exception as error:
+            return msg_read_error(error)
     
     class Meta:
         table_name = "tbusuario"

@@ -1,10 +1,10 @@
-from datetime import timedelta
 from flask import request
-from flask_jwt_extended import create_access_token, verify_jwt_in_request, get_jwt
+from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from repository.login_repository import Login
 from service.mensagens import *
-from service.autenticacao import autenticar
+from service.blacklist import blacklist
 
+@blacklist()
 def login():
 
     try:
@@ -12,24 +12,15 @@ def login():
         if request.method == "POST":
 
             usuario = Login.logar(request.get_json()["login"], request.get_json()["senha"])
-            
-            if usuario:
-                return msg_login_success(create_access_token(identity=usuario, expires_delta=timedelta(minutes=60)))
-            
-            else:
-                return msg_login_error()
+            return usuario
 
         elif request.method == "GET":
-
+            
             verify_jwt_in_request()
-            token = get_jwt()["sub"]
-            usuario = Login.validar(token)
-
-            if usuario:
-                return msg_login_success(create_access_token(identity=usuario, expires_delta=timedelta(minutes=60)))
-
-            else:
-                return msg_login_error()
+            pkcodusuario = get_jwt_identity()
+            token = request.headers["Authorization"][7::]
+            usuario = Login.validar(pkcodusuario, token)
+            return usuario
 
     except Exception as error:
 
