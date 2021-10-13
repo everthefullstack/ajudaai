@@ -1,5 +1,7 @@
 from config import string_db
 from model.usuario_model import UsuarioModel
+from model.evento_model import EventoModel
+from model.evento_usuario_model import EventoUsuarioModel
 from model.blacklist_model import BlackListModel
 from service.mensagens import *
 
@@ -13,6 +15,8 @@ def create_db():
     else:
         try:
             UsuarioModel.create_table()
+            EventoModel.create_table()
+            EventoUsuarioModel.create_table()
             BlackListModel.create_table()
             return msg_create_success("Banco de dados") 
 

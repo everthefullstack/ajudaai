@@ -15,19 +15,22 @@ class Usuario(UsuarioModel):
             return msg_create_error("Usuário")
     
     @classmethod
-    def read_usuario(cls, idusuario):
+    def read_usuario(cls, pkcodusuario):
 
-        usuario = cls.get_or_none(cls.idusuario == idusuario)
-        if usuario:
-            return usuario
-            
-        return False
+        try:
+
+            usuario = cls.get_or_none(cls.pkcodusuario == pkcodusuario)
+            if usuario:
+                return msg_read_success(usuario)
+        
+        except Exception as error:
+            return msg_read_error(error)
 
     @classmethod
     def read_usuarios(cls):
 
         try:
-            usuarios = cls.select().dicts().get()
+            usuarios = cls.select().dicts()
             if usuarios:
                 return msg_read_success(usuarios)
             
