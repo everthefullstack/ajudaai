@@ -1,7 +1,6 @@
 from model.usuario_model import UsuarioModel
 from service.hashes import *
 from service.mensagens import *
-import json
 
 class Usuario(UsuarioModel):
 
@@ -33,7 +32,7 @@ class Usuario(UsuarioModel):
         try:
             usuarios = cls.select().dicts()
             if usuarios:
-                return msg_read_success(json.dumps(usuarios))
+                return msg_read_success(list(usuarios))
             
         except Exception as error:
             return msg_read_error(error)
