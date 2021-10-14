@@ -31,7 +31,7 @@ class Usuario(UsuarioModel):
     def read_usuarios(cls):
 
         try:
-            usuarios = cls.select()
+            usuarios = cls.select().dicts()
             if usuarios:
                 return msg_read_success(json.dumps(usuarios))
             
