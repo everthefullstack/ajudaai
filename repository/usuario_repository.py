@@ -19,9 +19,9 @@ class Usuario(UsuarioModel):
 
         try:
 
-            usuario = cls.get_or_none(cls.pkcodusuario == pkcodusuario)
+            usuario = cls.select(cls.pkcodusuario == pkcodusuario).dicts()
             if usuario:
-                return msg_read_success(usuario)
+                return msg_read_success(list(usuario))
 
         except Exception as error:
             return msg_read_error(error)
@@ -32,7 +32,7 @@ class Usuario(UsuarioModel):
         try:
             usuarios = cls.select().dicts()
             if usuarios:
-                return msg_read_success(usuarios)
+                return msg_read_success(list(usuarios))
             
         except Exception as error:
             return msg_read_error(error)

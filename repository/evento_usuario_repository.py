@@ -19,7 +19,7 @@ class EventoUsuario(EventoUsuarioModel):
         try:
             evento_usuario = cls.select(cls.pkcodeventousuario == pkcodeventousuario).dicts()
             if evento_usuario:
-                return msg_read_success(evento_usuario)
+                return msg_read_success(list(evento_usuario))
             
         except Exception as error:
             return msg_read_error(error)
@@ -30,7 +30,7 @@ class EventoUsuario(EventoUsuarioModel):
         try:
             eventos_usuarios = cls.select().dicts()
             if eventos_usuarios:
-                return msg_read_success(eventos_usuarios)
+                return msg_read_success(list(eventos_usuarios))
             
         except Exception as error:
             return msg_read_error(error)

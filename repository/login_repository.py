@@ -23,7 +23,7 @@ class Login(UsuarioModel):
     @classmethod
     def validar(cls, pkcodusuario, token):
         try:
-            usuario = cls.get(cls.pkcodusuario == pkcodusuario)
+            usuario = cls.get_or_none(cls.pkcodusuario == pkcodusuario)
             if usuario:
                 return msg_login_success(token)
             

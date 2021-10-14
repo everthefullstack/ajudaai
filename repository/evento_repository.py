@@ -19,7 +19,7 @@ class Evento(EventoModel):
         try:
             evento = cls.select(cls.pkcodevento == pkcodevento).dicts()
             if evento:
-                return msg_read_success(evento)
+                return msg_read_success(list(evento))
             
         except Exception as error:
             return msg_read_error(error)
@@ -30,7 +30,7 @@ class Evento(EventoModel):
         try:
             eventos = cls.select().dicts()
             if eventos:
-                return msg_read_success(eventos)
+                return msg_read_success(list(eventos))
             
         except Exception as error:
             return msg_read_error(error)
