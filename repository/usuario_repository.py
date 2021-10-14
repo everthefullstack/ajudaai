@@ -22,7 +22,7 @@ class Usuario(UsuarioModel):
             usuario = cls.get_or_none(cls.pkcodusuario == pkcodusuario)
             if usuario:
                 return msg_read_success(usuario)
-        
+
         except Exception as error:
             return msg_read_error(error)
 

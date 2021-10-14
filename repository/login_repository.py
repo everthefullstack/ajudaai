@@ -13,7 +13,10 @@ class Login(UsuarioModel):
             usuario = cls.get_or_none(cls.login == login)
             if usuario:
                 if valida_senha(senha, usuario.senha):
-                    return msg_login_success(create_access_token(identity=usuario.pkcodusuario, expires_delta=timedelta(minutes=30))) 
+                    return msg_login_success(create_access_token(identity=usuario.pkcodusuario, expires_delta=timedelta(minutes=30)))
+
+            return msg_login_error()
+
         except:
             return msg_login_error()
     
@@ -23,6 +26,8 @@ class Login(UsuarioModel):
             usuario = cls.get(cls.pkcodusuario == pkcodusuario)
             if usuario:
                 return msg_login_success(token)
+            
+            return msg_login_error()
 
         except:
             return msg_login_error()
