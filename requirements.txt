@@ -1,0 +1,5 @@
+flask
+peewee
+flask-cors
+flask-jwt-extended
+bcrypt
