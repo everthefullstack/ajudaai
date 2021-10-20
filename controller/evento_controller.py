@@ -28,3 +28,4 @@ def create_evento():
     except Exception as error:
 
         return msg_server_error(error)
+        
