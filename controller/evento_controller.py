@@ -28,4 +28,34 @@ def create_evento():
     except Exception as error:
 
         return msg_server_error(error)
+
+@jwt_required()
+@blacklist()
+def get_eventos():
+
+    try:
+
+        if request.method == "GET":
+
+            eventos =Evento.read_eventos()
+            return eventos
+
+    except Exception as error:
+
+        return msg_server_error(error)
+
+@jwt_required()
+@blacklist()
+def get_eventos_usuario():
+
+    try:
+
+        if request.method == "GET":
+
+            eventos_usuario = Evento.read_eventos_usuario(pkcodusuario=request.headers["Authorization"][7::])
+            return eventos_usuario
+
+    except Exception as error:
+
+        return msg_server_error(error)
         
