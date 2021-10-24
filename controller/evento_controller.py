@@ -31,6 +31,21 @@ def create_evento():
 
 @jwt_required()
 @blacklist()
+def get_evento():
+
+    try:
+
+        if request.method == "POST":
+
+            eventos_usuario = Evento.read_evento(pkcodevento = request.get_json("pkcodevento"))
+            return eventos_usuario
+
+    except Exception as error:
+
+        return msg_server_error(error)
+
+@jwt_required()
+@blacklist()
 def get_eventos():
 
     try:
@@ -54,6 +69,19 @@ def get_eventos_usuario():
 
             eventos_usuario = Evento.read_eventos_usuario(pkcodusuario=request.headers["Authorization"][7::])
             return eventos_usuario
+
+    except Exception as error:
+
+        return msg_server_error(error)
+
+def get_eventos_publicos():
+
+    try:
+
+        if request.method == "GET":
+
+            eventos =Evento.read_eventos_publicos()
+            return eventos
 
     except Exception as error:
 

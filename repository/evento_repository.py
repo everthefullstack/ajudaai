@@ -37,6 +37,17 @@ class Evento(EventoModel):
             return msg_read_error(error)
     
     @classmethod
+    def read_eventos_publicos(cls):
+
+        try:
+            eventos = cls.select().dicts()
+            if eventos:
+                return msg_read_success(list(eventos))
+            
+        except Exception as error:
+            return msg_read_error(error)
+    
+    @classmethod
     def read_eventos_usuario(cls, pkcodusuario):
 
         try:
