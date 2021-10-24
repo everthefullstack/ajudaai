@@ -13,7 +13,7 @@ def create_evento_usuario():
         if request.method == "POST":
 
             evento_usuario = EventoUsuario(evento=request.get_json()["evento"],
-                                           usuario=request.get_json()["usuario"]).create_evento()
+                                           usuario=request.headers["Authorization"][7::]).create_evento()
 
             return evento_usuario
                       
