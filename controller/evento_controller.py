@@ -38,8 +38,8 @@ def get_evento():
 
         if request.method == "POST":
 
-            eventos_usuario = Evento.read_evento(pkcodevento = request.get_json("pkcodevento"))
-            return eventos_usuario
+            eventos = Evento.read_evento(pkcodevento=request.get_json()["pkcodevento"])
+            return eventos
 
     except Exception as error:
 
