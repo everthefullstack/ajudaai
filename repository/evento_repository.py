@@ -11,16 +11,17 @@ class Evento(EventoModel):
             self.save()
             return msg_create_success("Evento")
         
-        except:
+        except Exception as error:
             return msg_create_error("Evento")
     
     @classmethod
     def read_evento(cls, pkcodevento):
 
         try:
-            evento = cls.select(cls.pkcodevento == pkcodevento).dicts()
-            if evento:
-                return msg_read_success(list(evento))
+            evento = cls.select().where(cls.pkcodevento == pkcodevento).dicts()
+            print(evento)
+            print(list(evento))
+            return msg_read_success(list(evento))
             
         except Exception as error:
             return msg_read_error(error)
