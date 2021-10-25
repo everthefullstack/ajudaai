@@ -40,9 +40,12 @@ class Evento(EventoModel):
     def read_eventos_publicos(cls):
 
         try:
-            eventos = cls.select().where(cls.ativo == 1).dicts()
-            if eventos:
-                return msg_read_success(list(eventos))
+            eventos = (cls
+                        .select()
+                        .where(cls.ativo == 1)
+                        .dicts())
+
+            return msg_read_success(list(eventos))
             
         except Exception as error:
             return msg_read_error(error)

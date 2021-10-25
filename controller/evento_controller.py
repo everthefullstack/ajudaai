@@ -81,7 +81,7 @@ def get_eventos_publicos():
 
         if request.method == "GET":
 
-            eventos =Evento.read_eventos_publicos()
+            eventos = Evento.read_eventos_publicos()
             return eventos
 
     except Exception as error:
