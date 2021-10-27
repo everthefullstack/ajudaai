@@ -1,5 +1,6 @@
 from model.evento_model import EventoModel
 from model.evento_usuario_model import EventoUsuarioModel
+from model.usuario_model import UsuarioModel
 from service.hashes import *
 from service.mensagens import *
 
@@ -57,12 +58,20 @@ class Evento(EventoModel):
         try:
             eventos_usuario = (cls
                                 .select()
-                                .join(EventoUsuarioModel, on=(cls.pkcodevento == EventoUsuarioModel.evento))
                                 .where(cls.criador == pkcodusuario)
                                 .dicts())
 
-            if eventos_usuario:
-                return msg_read_success(list(eventos_usuario))
+            for evento_usuario in eventos_usuario:
+                
+                usuarios_evento = (UsuarioModel
+                                    .select(UsuarioModel.nome)
+                                    .join(EventoUsuarioModel, on=(EventoUsuarioModel.usuario == UsuarioModel.pkcodusuario))
+                                    .where(evento_usuario["pkcodevento"] == EventoUsuarioModel.evento)
+                                    .dicts())
+                
+                evento_usuario.update({"voluntarios": [usuario for usuario in usuarios_evento]})
+                
+            return msg_read_success(list(eventos_usuario))
             
         except Exception as error:
             return msg_read_error(error)

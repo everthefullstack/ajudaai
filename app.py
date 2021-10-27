@@ -29,6 +29,7 @@ app.add_url_rule(rule="/evento/get_eventos_usuario", endpoint="get_eventos_usuar
 app.add_url_rule(rule="/evento/get_eventos_publicos", endpoint="get_eventos_publicos", view_func=get_eventos_publicos, methods=["GET"])
 
 app.add_url_rule(rule="/eventousuario/create_evento_usuario", endpoint="create_evento_usuario", view_func=create_evento_usuario, methods=["POST"])
+
 # inicia o servidor
 if __name__ == "__main__":
 

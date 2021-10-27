@@ -1,3 +1,4 @@
+from model.evento_model import EventoModel
 from model.evento_usuario_model import EventoUsuarioModel
 from service.hashes import *
 from service.mensagens import *
@@ -7,8 +8,20 @@ class EventoUsuario(EventoUsuarioModel):
     def create_evento_usuario(self):
 
         try:
-            self.save()
-            return msg_create_success("Evento Usuário")
+            evento = (EventoModel
+                        .select(EventoModel.pkcodevento,
+                                EventoModel.criador)
+                        .where((EventoModel.pkcodevento == self.evento)
+                                &
+                                (EventoModel.criador == self.usuario))
+                        .dicts())
+            print(evento)
+            if evento:
+                return msg_create_error("Evento Usuário")
+
+            else:
+                self.save()
+                return msg_create_success("Evento Usuário")
         
         except:
             return msg_create_error("Evento Usuário")
