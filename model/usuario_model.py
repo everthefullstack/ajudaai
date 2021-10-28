@@ -1,4 +1,4 @@
-from peewee import PrimaryKeyField, CharField, BooleanField, IntegerField
+from peewee import DateField, PrimaryKeyField, CharField, BooleanField
 from model.base_model import BaseModel
 
 class UsuarioModel(BaseModel):
@@ -8,8 +8,8 @@ class UsuarioModel(BaseModel):
     senha = CharField(null=False)
     nome = CharField(null=False)
     telefone = CharField(null=False)
-    email = CharField(null=False)
-    idade = IntegerField(null=False)
+    email = CharField(null=False, unique=True)
+    datanascimento = DateField(null=False)
     ativo = BooleanField(default=1)
     
     class Meta:

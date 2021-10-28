@@ -1,7 +1,7 @@
 from flask import Flask
 from controller.login_controller import login
 from controller.logout_controller import logout
-from controller.usuario_controller import create_usuario, get_usuarios
+from controller.usuario_controller import create_usuario, get_usuarios, recuperar_senha, trocar_senha
 from controller.evento_controller import create_evento, get_eventos, get_evento, get_eventos_usuario, get_eventos_publicos
 from controller.evento_usuario_controller import create_evento_usuario
 from service.create_db import create_db
@@ -29,6 +29,9 @@ app.add_url_rule(rule="/evento/get_eventos_usuario", endpoint="get_eventos_usuar
 app.add_url_rule(rule="/evento/get_eventos_publicos", endpoint="get_eventos_publicos", view_func=get_eventos_publicos, methods=["GET"])
 
 app.add_url_rule(rule="/eventousuario/create_evento_usuario", endpoint="create_evento_usuario", view_func=create_evento_usuario, methods=["POST"])
+
+app.add_url_rule(rule="/recuperar_senha", endpoint="recuperar_senha", view_func=recuperar_senha, methods=["POST"])
+app.add_url_rule(rule="/trocar_senha/<string:token>", endpoint="trocar_senha", view_func=trocar_senha, methods=["GET"])
 
 # inicia o servidor
 if __name__ == "__main__":

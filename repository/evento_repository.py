@@ -72,7 +72,7 @@ class Evento(EventoModel):
             
         except Exception as error:
             return msg_read_error(error)
-
+            
     class Meta:
         table_name = "tbevento"
 
