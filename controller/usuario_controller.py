@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended.utils import decode_token
 from repository.usuario_repository import Usuario
@@ -23,7 +23,7 @@ def create_usuario():
                               datanascimento=request.get_json()["datanascimento"],
                               ativo=1).create_usuario()
 
-            return usuario
+            return jsonify(usuario)
                       
     except Exception as error:
 
