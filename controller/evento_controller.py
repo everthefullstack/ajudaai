@@ -74,6 +74,21 @@ def get_eventos_usuario():
 
         return msg_server_error(error)
 
+@jwt_required()
+@blacklist()
+def get_eventos_usuario_participacao():
+
+    try:
+
+        if request.method == "GET":
+
+            eventos_usuario = Evento.read_eventos_usuario_participacao(pkcodusuario=get_jwt_identity())
+            return eventos_usuario
+
+    except Exception as error:
+
+        return msg_server_error(error)
+
 def get_eventos_publicos():
 
     try:
@@ -86,4 +101,5 @@ def get_eventos_publicos():
     except Exception as error:
 
         return msg_server_error(error)
+
         
