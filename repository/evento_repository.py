@@ -100,6 +100,52 @@ class Evento(EventoModel):
         except Exception as error:
             return msg_read_error(error)
 
+    def update_evento(self, titulo, descricao, localizacao, 
+                      inicio, termino, imagem, categoria):
+
+        try:
+            self.titulo = titulo
+            self.descricao = descricao
+            self.localizacao = localizacao
+            self.inicio = inicio
+            self.termino = termino
+            self.imagem = imagem
+            self.categoria = categoria
+            self.save()
+
+            return msg_update_success("Evento")
+
+        except:
+            msg_update_error("Evento")
+    
+    def delete_evento(self):
+        
+        try:
+            self.ativo = 0
+            self.save()
+            return msg_update_success("Evento")
+
+        except:
+            msg_update_error("Evento")
+    
+    @classmethod
+    def read_emails_participantes_evento(pkcodevento):
+
+        try:
+            
+            pkcodusuarios = (EventoUsuarioModel
+                                .select(EventoUsuarioModel.usuario)
+                                .where(EventoUsuarioModel.evento == pkcodevento))
+
+            emails = (UsuarioModel
+                        .select(UsuarioModel.email)
+                        .where(UsuarioModel.pkcodusuario._in(pkcodusuarios)))
+
+            return emails
+            
+        except Exception as error:
+            return msg_read_error(error)
+
     class Meta:
         table_name = "tbevento"
 

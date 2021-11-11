@@ -16,6 +16,7 @@ def template_recuperacao_senha_1():
         </body>
         </html>
     """
+
 def template_recuperacao_senha_2():
     return """
         <!DOCTYPE html>
@@ -32,4 +33,47 @@ def template_recuperacao_senha_2():
         </body>
         </html>
     """
-   
+
+def template_edicao_evento():
+    return """
+        <!DOCTYPE html>
+        <html lang="PT-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Evento alterado!</title>
+        </head>
+        <body>
+            <div>
+                <p>O evento @nomeevento que você está participando sofreu mudanças.</p>
+                <p>Visite nossa plataforma para saber mais sobre.</p>
+            </div>
+        </body>
+        </html>
+    """
+
+def template_excluir_evento():
+    return """
+        <!DOCTYPE html>
+        <html lang="PT-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Evento cancelado!</title>
+        </head>
+        <body>
+            <div>
+                <p>O evento @nomeevento que você estava participando foi cancelado.</p>
+                <p>Caso necessário, entre em contato com o criador do evento para saber mais.</p>
+                <p>Contatos do criador:</p>
+                <div>
+                    Nome: @nomecriador <br>
+                    Email: @telefonecriador <br>
+                    Telefone: @emailcriador
+                </div>
+            </div>
+        </body>
+        </html>
+    """

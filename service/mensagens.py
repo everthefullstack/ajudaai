@@ -39,6 +39,12 @@ def msg_email_success():
 def msg_email_error():
     return json.dumps({"msg": "Não foi possível enviar o email.", "tipo": "msg_email_error"}), 202
 
+def msg_email_update_success(alterado):
+    return json.dumps({"msg": f"Foi feita a alteração no {alterado} e seus participantes foram notificados.", "tipo": "msg_email_update_success"}), 200
+
+def msg_email_update_error(alterado):
+    return json.dumps({"msg": f"Não foi possível alterar o {alterado}. e nenhum participante foi notificado.", "tipo": "msg_email_update_error"}), 202
+ 
 def msg_troca_senha_success():
     return json.dumps({"msg": "Foi enviada uma nova senha para o seu email.", "tipo": "msg_troca_senha_success"}), 200
 

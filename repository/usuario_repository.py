@@ -72,5 +72,22 @@ class Usuario(UsuarioModel):
 
         except:
             msg_update_error("Usuário")
+    
+    def update_usuario(self, senha, nome, telefone, email, datanascimento):
+
+        try:
+            if senha:
+                self.senha = gera_senha(senha)
+            
+            self.nome = nome
+            self.telefone = telefone
+            self.email = email
+            self.datanascimento = datanascimento
+            self.save()
+
+            return msg_update_success("Usuário")
+
+        except:
+            msg_update_error("Usuário")
     class Meta:
         table_name = "tbusuario"

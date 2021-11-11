@@ -74,7 +74,6 @@ def trocar_senha(token):
             
             if usuario:
                 
-                print(usuario)
                 senha = gera_senha_recuperar_email()
                 usuario.update_senha_recuperar_senha(senha)
                 template = template_recuperacao_senha_2()
@@ -88,4 +87,21 @@ def trocar_senha(token):
 
     except Exception as error:
         return msg_server_error(error)
-        
+
+def update_usuario():
+
+    try:
+
+        if request.method == "POST":
+            
+            usuario = Usuario.read_usuario(pkcodusuario=request.get_json()["pkcodusuario"])
+            usuario.update_usuario(senha=request.get_json()["senha"],
+                                   nome=request.get_json()["nome"],
+                                   telefone=request.get_json()["telefone"],
+                                   email=request.get_json()["email"],
+                                   datanascimento=request.get_json()["datanascimento"])
+            return usuario
+                      
+    except Exception as error:
+
+        return msg_server_error(error)
