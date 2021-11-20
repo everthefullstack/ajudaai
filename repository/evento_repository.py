@@ -3,7 +3,7 @@ from model.evento_usuario_model import EventoUsuarioModel
 from model.usuario_model import UsuarioModel
 from service.hashes import *
 from service.mensagens import *
-from peewee import fn
+from peewee import Case, fn
 
 class Evento(EventoModel):
 
@@ -16,6 +16,7 @@ class Evento(EventoModel):
         except Exception as error:
             return msg_create_error("Evento")
     
+    #traz evento especifico
     @classmethod
     def read_evento(cls, pkcodevento):
 
@@ -26,16 +27,47 @@ class Evento(EventoModel):
         except Exception as error:
             return msg_read_error(error)
 
+    #traz pkcodevento para fazer update desde que seja o criador
     @classmethod
-    def read_eventos(cls):
+    def read_evento_update_delete(cls, pkcodevento, pkcodusuario):
 
         try:
-            eventos = cls.select().dicts()
+            evento = cls.get_or_none(cls.pkcodevento == pkcodevento, cls.criador == pkcodusuario)
+            if evento:
+                return evento, True
+            
+            else:
+                return msg_read_error("Tentando editar/deletar evento que não é o criador"), False
+            
+        except Exception as error:
+            return msg_read_error(error), False
+            
+    #traz todos os eventos ativos e tambem se o usuario participa desse evento
+    @classmethod
+    def read_eventos(cls, pkcodusuario):
+
+        try:
+            eventos = (cls
+                        .select()
+                        .where((cls.ativo == 1))
+                        .dicts())
+
+            for evento in eventos:
+
+                participa = (EventoUsuarioModel
+                            .select(Case(fn.COUNT(EventoUsuarioModel.evento), ((0, "false"),(1, "true"))).alias("participa"))
+                            .where((EventoUsuarioModel.usuario == pkcodusuario) & 
+                                   (EventoUsuarioModel.evento == evento["pkcodevento"]))
+                            .dicts())
+
+                evento.update({"participa": participa[0]["participa"]})
+
             return msg_read_success(list(eventos))
             
         except Exception as error:
             return msg_read_error(error)
     
+    #traz todos os eventos ativos
     @classmethod
     def read_eventos_publicos(cls):
 
@@ -57,7 +89,7 @@ class Evento(EventoModel):
         try:
             eventos_usuario = (cls
                                 .select()
-                                .where(cls.criador == pkcodusuario)
+                                .where((cls.criador == pkcodusuario))
                                 .dicts())
 
             for evento_usuario in eventos_usuario:
@@ -75,7 +107,7 @@ class Evento(EventoModel):
         except Exception as error:
             return msg_read_error(error)
     
-    #eventos que o usuario participa
+    #eventos que o usuario participa e a atr de voluntarios
     @classmethod
     def read_eventos_usuario_participacao(cls, pkcodusuario):
 
@@ -101,7 +133,7 @@ class Evento(EventoModel):
             return msg_read_error(error)
 
     def update_evento(self, titulo, descricao, localizacao, 
-                      inicio, termino, imagem, categoria):
+                      inicio, termino, categoria, imagem):
 
         try:
             self.titulo = titulo
@@ -112,7 +144,6 @@ class Evento(EventoModel):
             self.imagem = imagem
             self.categoria = categoria
             self.save()
-
             return msg_update_success("Evento")
 
         except:
@@ -123,23 +154,28 @@ class Evento(EventoModel):
         try:
             self.ativo = 0
             self.save()
+
             return msg_update_success("Evento")
 
         except:
             msg_update_error("Evento")
     
-    @classmethod
+    @staticmethod
     def read_emails_participantes_evento(pkcodevento):
 
         try:
             
+            lista = []
             pkcodusuarios = (EventoUsuarioModel
                                 .select(EventoUsuarioModel.usuario)
-                                .where(EventoUsuarioModel.evento == pkcodevento))
+                                .where(EventoUsuarioModel.evento == pkcodevento)).dicts()
+                                
+            for pk in pkcodusuarios:
+                lista.append(pk["usuario"])
 
             emails = (UsuarioModel
                         .select(UsuarioModel.email)
-                        .where(UsuarioModel.pkcodusuario._in(pkcodusuarios)))
+                        .where(UsuarioModel.pkcodusuario.in_(lista))).dicts()
 
             return emails
             

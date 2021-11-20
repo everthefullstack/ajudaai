@@ -20,3 +20,20 @@ def create_evento_usuario():
     except Exception as error:
 
         return msg_server_error(error)
+
+@jwt_required()
+@blacklist()
+def delete_evento_usuario():
+
+    try:
+
+        if request.method == "POST":
+
+            evento_usuario = EventoUsuario.read_eventos_usuario_participacao(evento=request.get_json()["pkcodevento"],
+                                                                             usuario=get_jwt_identity())
+            
+            return evento_usuario
+                      
+    except Exception as error:
+
+        return msg_server_error(error)

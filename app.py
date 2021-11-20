@@ -6,7 +6,7 @@ from controller.usuario_controller import (create_usuario, get_usuarios, recuper
 from controller.evento_controller import (create_evento, get_eventos, get_evento, get_eventos_usuario, 
                                           get_eventos_publicos, get_eventos_usuario_participacao,
                                           update_evento, delete_evento)
-from controller.evento_usuario_controller import create_evento_usuario
+from controller.evento_usuario_controller import create_evento_usuario, delete_evento_usuario
 from service.create_db import create_db
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -24,7 +24,7 @@ app.add_url_rule(rule="/logout", endpoint="logout", view_func=logout, methods=["
 
 app.add_url_rule(rule="/usuario/create_usuario", endpoint="create_usuario", view_func=create_usuario, methods=["POST"])
 app.add_url_rule(rule="/usuario/get_usuarios", endpoint="get_usuarios", view_func=get_usuarios, methods=["GET"])
-app.add_url_rule(rule="/usuario/update_usuario", endpoint="get_uupdate_usuariosuarios", view_func=update_usuario, methods=["POST"])
+app.add_url_rule(rule="/usuario/update_usuario", endpoint="update_usuario", view_func=update_usuario, methods=["POST"])
 
 app.add_url_rule(rule="/evento/create_evento", endpoint="create_evento", view_func=create_evento, methods=["POST"])
 app.add_url_rule(rule="/evento/get_eventos", endpoint="get_eventos", view_func=get_eventos, methods=["GET"])
@@ -36,6 +36,7 @@ app.add_url_rule(rule="/evento/update_evento", endpoint="update_evento", view_fu
 app.add_url_rule(rule="/evento/delete_evento", endpoint="delete_evento", view_func=delete_evento, methods=["POST"])
 
 app.add_url_rule(rule="/eventousuario/create_evento_usuario", endpoint="create_evento_usuario", view_func=create_evento_usuario, methods=["POST"])
+app.add_url_rule(rule="/eventousuario/delete_evento_usuario", endpoint="delete_evento_usuario", view_func=delete_evento_usuario, methods=["POST"])
 
 app.add_url_rule(rule="/recuperar_senha", endpoint="recuperar_senha", view_func=recuperar_senha, methods=["POST"])
 app.add_url_rule(rule="/trocar_senha/<string:token>", endpoint="trocar_senha", view_func=trocar_senha, methods=["GET"])

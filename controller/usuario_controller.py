@@ -1,5 +1,5 @@
 from flask import request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended.utils import decode_token
 from repository.usuario_repository import Usuario
 from service.gera_senhas import gera_senha_recuperar_email
@@ -88,18 +88,22 @@ def trocar_senha(token):
     except Exception as error:
         return msg_server_error(error)
 
+@jwt_required()
+@blacklist()
 def update_usuario():
 
     try:
 
         if request.method == "POST":
             
-            usuario = Usuario.read_usuario(pkcodusuario=request.get_json()["pkcodusuario"])
-            usuario.update_usuario(senha=request.get_json()["senha"],
-                                   nome=request.get_json()["nome"],
-                                   telefone=request.get_json()["telefone"],
-                                   email=request.get_json()["email"],
-                                   datanascimento=request.get_json()["datanascimento"])
+            usuario = Usuario.read_usuario_update(pkcodusuario=get_jwt_identity())
+            
+            usuario = usuario.update_usuario(senha=request.get_json()["senha"],
+                                            nome=request.get_json()["nome"],
+                                            telefone=request.get_json()["telefone"],
+                                            email=request.get_json()["email"],
+                                            datanascimento=request.get_json()["datanascimento"])
+                                   
             return usuario
                       
     except Exception as error:

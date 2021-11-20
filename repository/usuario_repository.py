@@ -20,13 +20,25 @@ class Usuario(UsuarioModel):
     def read_usuario(cls, pkcodusuario):
 
         try:
-            usuario = cls.select(cls.pkcodusuario == pkcodusuario).dicts()
+            usuario = cls.select().where(cls.pkcodusuario == pkcodusuario).dicts()
             if usuario:
                 return msg_read_success(list(usuario))
 
         except Exception as error:
             return msg_read_error(error)
     
+    @classmethod
+    def read_usuario_update(cls, pkcodusuario):
+
+        try:
+            usuario = cls.get_or_none(cls.pkcodusuario == pkcodusuario)
+            
+            if usuario:
+                return usuario
+
+        except:
+            return False
+
     @classmethod
     def read_usuario_recuperar_senha(cls, pkcodusuario):
 

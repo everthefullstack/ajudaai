@@ -49,7 +49,7 @@ def email_edicao_evento(template, destinatarios, nomeevento=None):
         for destinatario in destinatarios:  
             #email pelo google
             email_from = "ajudaaiacoeshumanitarias@gmail.com"
-            email_to = destinatario
+            email_to = destinatario["email"]
             msg = EmailMessage()
             msg.add_alternative(transform(template), subtype='html')
             msg['Subject'] = "Evento alterado!"
@@ -96,10 +96,10 @@ def email_excluir_evento(template, destinatarios, nomeevento=None,
         for destinatario in destinatarios:  
             #email pelo google
             email_from = "ajudaaiacoeshumanitarias@gmail.com"
-            email_to = destinatario
+            email_to = destinatario["email"]
             msg = EmailMessage()
             msg.add_alternative(transform(template), subtype='html')
-            msg['Subject'] = "Evento alterado!"
+            msg['Subject'] = "Evento Cancelado!"
             msg['From'] = email_from
             msg['To'] = email_to
             

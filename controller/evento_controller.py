@@ -56,7 +56,7 @@ def get_eventos():
 
         if request.method == "GET":
 
-            eventos = Evento.read_eventos()
+            eventos = Evento.read_eventos(pkcodusuario=get_jwt_identity())
             return eventos
 
     except Exception as error:
@@ -114,27 +114,33 @@ def update_evento():
 
         if request.method == "POST":
 
-            evento = Evento.read_evento(pkcodevento=request.get_json()["pkcodevento"])
-            evento = evento.update_evento(titulo=request.get_json()["titulo"],
-                                          descricao=request.get_json()["descricao"],
-                                          localizacao=request.get_json()["localizacao"],
-                                          inicio=request.get_json()["inicio"],
-                                          termino=request.get_json()["termino"],
-                                          imagem=request.get_json()["imagem"],
-                                          categoria=request.get_json()["categoria"])
+            evento, valida = Evento.read_evento_update_delete(pkcodevento=request.get_json()["pkcodevento"],
+                                                              pkcodusuario=get_jwt_identity())
+            if valida:
+                evento = evento.update_evento(titulo=request.get_json()["titulo"],
+                                            descricao=request.get_json()["descricao"],
+                                            localizacao=request.get_json()["localizacao"],
+                                            inicio=request.get_json()["inicio"],
+                                            termino=request.get_json()["termino"],
+                                            categoria=request.get_json()["categoria"],
+                                            imagem=request.get_json()["imagem"])
 
-            emails_participantes = Evento.read_emails_participantes_evento(request.get_json()["pkcodevento"])
-            template = template_edicao_evento()
-            disparo = email_edicao_evento(template, emails_participantes, request.get_json()["titulo"])
+                emails_participantes = Evento.read_emails_participantes_evento(request.get_json()["pkcodevento"])
 
-            if evento and disparo:
-                return msg_email_update_success("Evento")
+                template = template_edicao_evento()
+                disparo = email_edicao_evento(template, emails_participantes, request.get_json()["titulo"])
 
-            elif evento and not disparo:
-                 return evento
+                if evento and disparo:
+                    return msg_email_update_success("Evento")
+
+                elif evento and not disparo:
+                    return evento
+
+                else:
+                    return msg_email_update_error("Evento")
 
             else:
-                return msg_email_update_error("Evento")
+                return evento
 
     except Exception as error:
         return msg_server_error(error)
@@ -147,22 +153,27 @@ def delete_evento():
 
         if request.method == "POST":
 
-            evento = Evento.read_evento(pkcodevento=request.get_json()["pkcodevento"])
-            ret_evento = evento.delete_evento()
-            criador = Usuario.read_usuario(pkcodusuario = evento.criador)
-            emails_participantes = Evento.read_emails_participantes_evento(request.get_json()["pkcodevento"])
-            template = template_excluir_evento()
-            disparo = email_excluir_evento(template, emails_participantes, evento.titulo, 
-                                           criador.nome, criador.telefone, criador.email)
+            evento, valida = Evento.read_evento_update_delete(pkcodevento=request.get_json()["pkcodevento"],
+                                                              pkcodusuario=get_jwt_identity())
+            if valida:
+                ret_evento = evento.delete_evento()
+                criador = Usuario.read_usuario_update(pkcodusuario = evento.criador)
+                emails_participantes = Evento.read_emails_participantes_evento(request.get_json()["pkcodevento"])
+                template = template_excluir_evento()
+                disparo = email_excluir_evento(template, emails_participantes, evento.titulo, 
+                                               criador.nome, criador.telefone, criador.email)
 
-            if ret_evento and disparo:
-                return msg_email_update_success("Evento")
+                if ret_evento and disparo:
+                    return msg_email_update_success("Evento")
 
-            elif ret_evento and not disparo:
-                 return ret_evento
+                elif ret_evento and not disparo:
+                    return ret_evento
+
+                else:
+                    return msg_email_update_error("Evento")
 
             else:
-                return msg_email_update_error("Evento")
+                return evento
 
     except Exception as error:
 

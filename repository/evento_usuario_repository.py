@@ -47,6 +47,32 @@ class EventoUsuario(EventoUsuarioModel):
             
         except Exception as error:
             return msg_read_error(error)
+
+    @classmethod
+    def read_eventos_usuario_participacao(cls, evento, usuario):
+
+        try:
+            evento_usuario = (cls
+                                .select()
+                                .where((cls.evento == evento) & (cls.usuario == usuario))
+                                .dicts())
+            if evento_usuario:
+
+                evento_deletado = evento_usuario
+                evento_usuario.delete_evento_usuario()
+                return msg_read_success(list(evento_deletado))
+            
+        except Exception as error:
+            return msg_read_error(error)
+
+    def delete_evento_usuario(self):
+        
+        try:
+            self.delete_instance()
+            return msg_update_success("Evento Usuário")
+
+        except:
+            msg_update_error("Evento Usuário")
     
     class Meta:
         table_name = "tbeventousuario"
