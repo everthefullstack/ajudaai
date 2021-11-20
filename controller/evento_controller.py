@@ -17,12 +17,14 @@ def create_evento():
 
         if request.method == "POST":
             
+            
+            
             evento = Evento(titulo=request.get_json()["titulo"],
                             descricao=request.get_json()["descricao"],
                             localizacao=request.get_json()["localizacao"],
-                            datahora=datetime.now().strftime("%d/%m/%Y, %H:%M"),
-                            inicio=request.get_json()["inicio"],
-                            termino=request.get_json()["termino"],
+                            datahora=datetime.now().strftime("%Y-%m-%d"),
+                            inicio=(datetime.strptime((request.get_json()["inicio"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")),
+                            termino=(datetime.strptime((request.get_json()["termino"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")),
                             imagem=request.get_json()["imagem"],
                             categoria=request.get_json()["categoria"],
                             criador=get_jwt_identity(),
