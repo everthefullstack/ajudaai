@@ -9,4 +9,5 @@ class BaseModel(Model):
                                       user="zcweuekvmmdpsh", 
                                       password="1e84a5310ec6b5e477b92c93c1399b50b76a8537f281689ac93bef4f88d8b2fc",
                                       host= "ec2-35-168-80-116.compute-1.amazonaws.com", 
-                                      port=5432)
+                                      port=5432,
+                                      autorollback=True)
