@@ -122,8 +122,8 @@ def update_evento():
                 evento = evento.update_evento(titulo=request.get_json()["titulo"],
                                             descricao=request.get_json()["descricao"],
                                             localizacao=request.get_json()["localizacao"],
-                                            inicio=request.get_json()["inicio"],
-                                            termino=request.get_json()["termino"],
+                                            inicio=(datetime.strptime((request.get_json()["inicio"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")),
+                                            termino=(datetime.strptime((request.get_json()["termino"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")),
                                             categoria=request.get_json()["categoria"],
                                             imagem=request.get_json()["imagem"])
 
