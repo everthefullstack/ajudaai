@@ -6,3 +6,4 @@ bcrypt
 gunicorn
 lxml
 premailer
+psycopg2
