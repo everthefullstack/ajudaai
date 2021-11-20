@@ -41,9 +41,10 @@ app.add_url_rule(rule="/eventousuario/delete_evento_usuario", endpoint="delete_e
 app.add_url_rule(rule="/recuperar_senha", endpoint="recuperar_senha", view_func=recuperar_senha, methods=["POST"])
 app.add_url_rule(rule="/trocar_senha/<string:token>", endpoint="trocar_senha", view_func=trocar_senha, methods=["GET"])
 
+"""
 # inicia o servidor
 if __name__ == "__main__":
 
     create_db()
     app.run()
-    
+"""
