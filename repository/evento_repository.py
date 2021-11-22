@@ -89,7 +89,7 @@ class Evento(EventoModel):
         try:
             eventos_usuario = (cls
                                 .select()
-                                .where((cls.criador == pkcodusuario))
+                                .where(cls.criador == pkcodusuario, cls.ativo == 1)
                                 .dicts())
 
             for evento_usuario in eventos_usuario:
