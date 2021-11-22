@@ -14,7 +14,6 @@ class Evento(EventoModel):
             return msg_create_success("Evento")
         
         except Exception as error:
-            print(error)
             return msg_create_error("Evento")
     
     #traz evento especifico

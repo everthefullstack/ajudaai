@@ -1,4 +1,4 @@
-from peewee import ForeignKeyField, PrimaryKeyField
+from peewee import ForeignKeyField, PrimaryKeyField, SQL
 from model.base_model import BaseModel
 from model.evento_model import EventoModel
 from model.usuario_model import UsuarioModel
@@ -11,3 +11,4 @@ class EventoUsuarioModel(BaseModel):
 
     class Meta:
         table_name = "tbeventousuario"
+        constraints = [SQL("CONSTRAINT uk_eventousuario UNIQUE (evento_id, usuario_id)")]

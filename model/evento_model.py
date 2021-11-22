@@ -1,4 +1,4 @@
-from peewee import  DateTimeField, ForeignKeyField, PrimaryKeyField, CharField, BooleanField
+from peewee import  DateTimeField, ForeignKeyField, PrimaryKeyField, CharField, BooleanField, TextField
 from model.base_model import BaseModel
 from model.usuario_model import UsuarioModel
 
@@ -11,7 +11,7 @@ class EventoModel(BaseModel):
     datahora = DateTimeField()
     inicio = DateTimeField()
     termino = DateTimeField()
-    imagem = CharField()
+    imagem = TextField()
     categoria = CharField(null=False)
     criador = ForeignKeyField(UsuarioModel, null=False, on_delete="NO ACTION")
     ativo = BooleanField(default=1)
