@@ -95,7 +95,9 @@ class Evento(EventoModel):
             for evento_usuario in eventos_usuario:
                 
                 usuarios_evento = (UsuarioModel
-                                    .select(UsuarioModel.nome)
+                                    .select(UsuarioModel.nome,
+                                            UsuarioModel.email,
+                                            UsuarioModel.telefone)
                                     .join(EventoUsuarioModel, on=(EventoUsuarioModel.usuario == UsuarioModel.pkcodusuario))
                                     .where(evento_usuario["pkcodevento"] == EventoUsuarioModel.evento)
                                     .dicts())
@@ -107,7 +109,7 @@ class Evento(EventoModel):
         except Exception as error:
             return msg_read_error(error)
     
-    #eventos que o usuario participa e a atr de voluntarios
+    #eventos que o usuario participa e a qtd de voluntarios
     @classmethod
     def read_eventos_usuario_participacao(cls, pkcodusuario):
 
