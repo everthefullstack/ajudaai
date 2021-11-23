@@ -113,11 +113,18 @@ def update_usuario():
             
             usuario = Usuario.read_usuario_update(pkcodusuario=get_jwt_identity())
             
-            usuario = usuario.update_usuario(senha=request.get_json()["senha"],
-                                             nome=request.get_json()["nome"],
-                                             telefone=request.get_json()["telefone"],
-                                             email=request.get_json()["email"],
-                                             datanascimento=(datetime.strptime((request.get_json()["datanascimento"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")))
+            try:
+                usuario = usuario.update_usuario(senha=request.get_json()["senha"],
+                                                 nome=request.get_json()["nome"],
+                                                 telefone=request.get_json()["telefone"],
+                                                 email=request.get_json()["email"],
+                                                 datanascimento=(datetime.strptime((request.get_json()["datanascimento"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")))
+            except:
+                usuario = usuario.update_usuario(senha="",
+                                                 nome=request.get_json()["nome"],
+                                                 telefone=request.get_json()["telefone"],
+                                                 email=request.get_json()["email"],
+                                                 datanascimento=(datetime.strptime((request.get_json()["datanascimento"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")))                       
             return usuario
                       
     except Exception as error:
