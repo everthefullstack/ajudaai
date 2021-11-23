@@ -50,3 +50,9 @@ def msg_troca_senha_success():
 
 def msg_troca_senha_error():
     return json.dumps({"msg": "Não Foi enviada uma nova senha para o seu email, refaça o processo ou consulte um administrador", "tipo": "msg_troca_senha_error"}, default = str), 202
+
+def msg_delete_error(deletado):
+    return json.dumps({"msg": f"{deletado} nao deletado.", "tipo": "msg_delete_error"}, default = str), 202
+
+def msg_delete_success(deletado):
+    return json.dumps({"msg": f"{deletado} deletado com sucesso.", "tipo": "msg_delete_success"}, default = str), 200

@@ -37,8 +37,23 @@ def get_usuarios():
 
         if request.method == "GET":
 
-            usuarios = Usuario.read_usuarios()
+            usuarios = Usuario.read_usuario()
             return usuarios
+
+    except Exception as error:
+
+        return msg_server_error(error)
+
+@jwt_required()
+@blacklist()
+def get_usuario():
+
+    try:
+
+        if request.method == "GET":
+
+            usuario = Usuario.read_usuario(pkcodusuario=get_jwt_identity())
+            return usuario
 
     except Exception as error:
 

@@ -54,14 +54,19 @@ class EventoUsuario(EventoUsuarioModel):
         try:
             evento_usuario = (cls
                                 .select()
-                                .where((cls.evento == evento) & (cls.usuario == usuario))
-                                .dicts())
+                                .where((cls.evento == evento) & (cls.usuario == usuario)))
             if evento_usuario:
+                
+                evento_deletado = []
 
-                evento_deletado = evento_usuario
-                evento_usuario.delete_evento_usuario()
-                return msg_read_success(list(evento_deletado))
+                for e in evento_usuario:
+
+                    evento_deletado.append(e)
+                    return e.delete_evento_usuario()
             
+            else: 
+                return msg_delete_error("Evento Usuário")
+
         except Exception as error:
             return msg_read_error(error)
 
@@ -69,10 +74,10 @@ class EventoUsuario(EventoUsuarioModel):
         
         try:
             self.delete_instance()
-            return msg_update_success("Evento Usuário")
+            return msg_delete_success("Evento Usuário")
 
         except:
-            msg_update_error("Evento Usuário")
+            msg_delete_error("Evento Usuário")
     
     class Meta:
         table_name = "tbeventousuario"
