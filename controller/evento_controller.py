@@ -17,8 +17,6 @@ def create_evento():
 
         if request.method == "POST":
             
-            
-            
             evento = Evento(titulo=request.get_json()["titulo"],
                             descricao=request.get_json()["descricao"],
                             localizacao=request.get_json()["localizacao"],

@@ -8,6 +8,7 @@ from service.blacklist import blacklist
 from service.templates import template_recuperacao_senha_1, template_recuperacao_senha_2
 from service.emails import email_recuperar_senha
 from config import configuracoes
+from datetime import datetime
 
 def create_usuario():
 
@@ -20,9 +21,8 @@ def create_usuario():
                               nome=request.get_json()["nome"],
                               telefone=request.get_json()["telefone"],
                               email=request.get_json()["email"],
-                              datanascimento=request.get_json()["datanascimento"],
+                              datanascimento=(datetime.strptime((request.get_json()["datanascimento"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")),
                               ativo=1).create_usuario()
-
             return usuario
                       
     except Exception as error:
@@ -114,11 +114,10 @@ def update_usuario():
             usuario = Usuario.read_usuario_update(pkcodusuario=get_jwt_identity())
             
             usuario = usuario.update_usuario(senha=request.get_json()["senha"],
-                                            nome=request.get_json()["nome"],
-                                            telefone=request.get_json()["telefone"],
-                                            email=request.get_json()["email"],
-                                            datanascimento=request.get_json()["datanascimento"])
-                                   
+                                             nome=request.get_json()["nome"],
+                                             telefone=request.get_json()["telefone"],
+                                             email=request.get_json()["email"],
+                                             datanascimento=(datetime.strptime((request.get_json()["datanascimento"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")))
             return usuario
                       
     except Exception as error:
