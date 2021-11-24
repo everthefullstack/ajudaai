@@ -1,9 +1,11 @@
+import datetime
 from model.evento_model import EventoModel
 from model.evento_usuario_model import EventoUsuarioModel
 from model.usuario_model import UsuarioModel
 from service.hashes import *
 from service.mensagens import *
 from peewee import Case, fn
+from playhouse.shortcuts import model_to_dict
 
 class Evento(EventoModel):
 
@@ -21,7 +23,8 @@ class Evento(EventoModel):
     def read_evento(cls, pkcodevento):
 
         try:
-            evento = cls.select().where(cls.pkcodevento == pkcodevento).dicts()
+            evento = cls.select().where(cls.pkcodevento == pkcodevento)
+            evento = [model_to_dict(e) for e in evento if e.inativa_evento() == False]
             return msg_read_success(list(evento))
             
         except Exception as error:
@@ -49,8 +52,9 @@ class Evento(EventoModel):
         try:
             eventos = (cls
                         .select()
-                        .where((cls.ativo == 1))
-                        .dicts())
+                        .where((cls.ativo == 1)))
+
+            eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
 
             for evento in eventos:
 
@@ -74,8 +78,9 @@ class Evento(EventoModel):
         try:
             eventos = (cls
                         .select()
-                        .where(cls.ativo == 1)
-                        .dicts())
+                        .where(cls.ativo == 1))
+
+            eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
 
             return msg_read_success(list(eventos))
             
@@ -89,8 +94,9 @@ class Evento(EventoModel):
         try:
             eventos_usuario = (cls
                                 .select()
-                                .where(cls.criador == pkcodusuario, cls.ativo == 1)
-                                .dicts())
+                                .where(cls.criador == pkcodusuario, cls.ativo == 1))
+
+            eventos_usuario = [model_to_dict(e) for e in eventos_usuario if e.inativa_evento() == False]
 
             for evento_usuario in eventos_usuario:
                 
@@ -118,9 +124,10 @@ class Evento(EventoModel):
             eventos = (cls
                         .select(cls)
                         .join(EventoUsuarioModel, on=(EventoUsuarioModel.evento == cls.pkcodevento))
-                        .where(EventoUsuarioModel.usuario == pkcodusuario)
-                        .dicts())
+                        .where(EventoUsuarioModel.usuario == pkcodusuario))
             
+            eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
+
             for evento in eventos:
 
                 qtd_voluntarios = (EventoUsuarioModel
@@ -162,6 +169,16 @@ class Evento(EventoModel):
         except:
             msg_update_error("Evento")
     
+    def inativa_evento(self):
+
+        if datetime.datetime.now() >= self.termino:
+            self.ativo = 0
+            self.save()
+            return True
+
+        else:
+            return False
+
     @staticmethod
     def read_emails_participantes_evento(pkcodevento):
 
