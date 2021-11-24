@@ -120,7 +120,7 @@ def update_usuario():
                                                  email=request.get_json()["email"],
                                                  datanascimento=(datetime.strptime((request.get_json()["datanascimento"])[:10], "%d/%m/%Y").strftime("%Y-%m-%d")))
             except:
-                usuario = usuario.update_usuario(senha="",
+                usuario = usuario.update_usuario(senha=False,
                                                  nome=request.get_json()["nome"],
                                                  telefone=request.get_json()["telefone"],
                                                  email=request.get_json()["email"],
