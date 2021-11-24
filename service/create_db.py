@@ -6,7 +6,7 @@ from model.blacklist_model import BlackListModel
 from service.mensagens import *
 
 def create_db():
-
+    
     if string_db() == True or string_db() is not None:
 
         print("Já existe um banco de dados, não será criado novamente.")
