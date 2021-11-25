@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from controller.login_controller import login
 from controller.logout_controller import logout
 from controller.usuario_controller import (create_usuario, get_usuarios, get_usuario, recuperar_senha, trocar_senha,
@@ -7,6 +7,7 @@ from controller.evento_controller import (create_evento, get_eventos, get_evento
                                           get_eventos_publicos, get_eventos_usuario_participacao,
                                           update_evento, delete_evento)
 from controller.evento_usuario_controller import create_evento_usuario, delete_evento_usuario
+from controller.metrica_controller import create_or_update_metrica, get_metricas
 from service.create_db import create_db
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -42,10 +43,36 @@ app.add_url_rule(rule="/eventousuario/delete_evento_usuario", endpoint="delete_e
 app.add_url_rule(rule="/recuperar_senha", endpoint="recuperar_senha", view_func=recuperar_senha, methods=["POST"])
 app.add_url_rule(rule="/trocar_senha/<string:token>", endpoint="trocar_senha", view_func=trocar_senha, methods=["GET"])
 
+app.add_url_rule(rule="/metrica/get_metricas", endpoint="get_metricas", view_func=get_metricas, methods=["GET"])
+
+
+@app.before_request
+def save_metricas():
+
+    urls = ["create_usuario", 
+            "create_evento",
+            "delete_evento",
+            "update_evento",
+            "get_eventos",
+            "get_eventos_usuario",
+            "get_eventos_publicos",
+            "get_eventos_usuario_participacao",
+            "create_evento_usuario",
+            "delete_evento_usuario"]
+
+    endpoint = request.url_rule.endpoint
+
+    if endpoint in urls:
+
+        res = create_or_update_metrica(endpoint)
+        print(res)
+
+    else:
+        pass
 """
 # inicia o servidor
 if __name__ == "__main__":
 
-    create_db()
+    #create_db()
     app.run()
 """

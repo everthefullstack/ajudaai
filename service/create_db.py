@@ -3,6 +3,7 @@ from model.usuario_model import UsuarioModel
 from model.evento_model import EventoModel
 from model.evento_usuario_model import EventoUsuarioModel
 from model.blacklist_model import BlackListModel
+from model.metrica_model import MetricaModel
 from service.mensagens import *
 
 def create_db():
@@ -18,6 +19,7 @@ def create_db():
             EventoModel.create_table()
             EventoUsuarioModel.create_table()
             BlackListModel.create_table()
+            MetricaModel.create_table()
             return msg_create_success("Banco de dados") 
 
         except Exception as error:
