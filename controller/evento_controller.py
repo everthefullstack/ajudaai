@@ -40,8 +40,9 @@ def get_evento():
     try:
 
         if request.method == "POST":
+            
 
-            evento = Evento.read_evento(pkcodevento=request.get_json()["pkcodevento"])
+            evento = Evento.read_evento(pkcodevento=request.get_json()["pkcodevento"], categoria=request.args.get("categoria"))
             return evento
 
     except Exception as error:
@@ -56,23 +57,7 @@ def get_eventos():
 
         if request.method == "GET":
 
-            eventos = Evento.read_eventos(pkcodusuario=get_jwt_identity())
-            return eventos
-
-    except Exception as error:
-
-        return msg_server_error(error)
-
-@jwt_required()
-@blacklist()
-def get_eventos_categoria():
-
-    try:
-
-        if request.method == "POST":
-
-            eventos = Evento.read_eventos_categoria(pkcodusuario=get_jwt_identity(), 
-                                                    categoria=request.get_json()["categoria"])
+            eventos = Evento.read_eventos(pkcodusuario=get_jwt_identity(), categoria=request.args.get("categoria"))
             return eventos
 
     except Exception as error:
@@ -87,7 +72,7 @@ def get_eventos_usuario():
 
         if request.method == "GET":
 
-            eventos_usuario = Evento.read_eventos_usuario(pkcodusuario=get_jwt_identity())
+            eventos_usuario = Evento.read_eventos_usuario(pkcodusuario=get_jwt_identity(), categoria=request.args.get("categoria"))
             return eventos_usuario
 
     except Exception as error:
@@ -102,7 +87,7 @@ def get_eventos_usuario_participacao():
 
         if request.method == "GET":
 
-            eventos_usuario = Evento.read_eventos_usuario_participacao(pkcodusuario=get_jwt_identity())
+            eventos_usuario = Evento.read_eventos_usuario_participacao(pkcodusuario=get_jwt_identity(), categoria=request.args.get("categoria"))
             return eventos_usuario
 
     except Exception as error:

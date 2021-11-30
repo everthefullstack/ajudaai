@@ -5,7 +5,7 @@ from controller.usuario_controller import (create_usuario, get_usuarios, get_usu
                                            update_usuario)
 from controller.evento_controller import (create_evento, get_eventos, get_evento, get_eventos_usuario, 
                                           get_eventos_publicos, get_eventos_usuario_participacao,
-                                          update_evento, delete_evento, get_eventos_categoria)
+                                          update_evento, delete_evento)
 from controller.evento_usuario_controller import create_evento_usuario, delete_evento_usuario
 from controller.metrica_controller import create_or_update_metrica, get_metricas
 from service.create_db import create_db
@@ -30,7 +30,6 @@ app.add_url_rule(rule="/usuario/update_usuario", endpoint="update_usuario", view
 
 app.add_url_rule(rule="/evento/create_evento", endpoint="create_evento", view_func=create_evento, methods=["POST"])
 app.add_url_rule(rule="/evento/get_eventos", endpoint="get_eventos", view_func=get_eventos, methods=["GET"])
-app.add_url_rule(rule="/evento/get_eventos_categoria", endpoint="get_eventos_categoria", view_func=get_eventos_categoria, methods=["GET"])
 app.add_url_rule(rule="/evento/get_evento", endpoint="get_evento", view_func=get_evento, methods=["POST"])
 app.add_url_rule(rule="/evento/get_eventos_usuario", endpoint="get_eventos_usuario", view_func=get_eventos_usuario, methods=["GET"])
 app.add_url_rule(rule="/evento/get_eventos_publicos", endpoint="get_eventos_publicos", view_func=get_eventos_publicos, methods=["GET"])

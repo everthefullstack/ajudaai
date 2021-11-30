@@ -20,12 +20,19 @@ class Evento(EventoModel):
     
     #traz evento especifico
     @classmethod
-    def read_evento(cls, pkcodevento):
+    def read_evento(cls, pkcodevento, categoria):
 
         try:
-            evento = cls.select().where(cls.pkcodevento == pkcodevento)
-            evento = [model_to_dict(e) for e in evento if e.inativa_evento() == False]
-            return msg_read_success(list(evento))
+
+            if categoria:
+                evento = cls.select().where((cls.pkcodevento == pkcodevento) & (cls.categoria == categoria))
+                evento = [model_to_dict(e) for e in evento if e.inativa_evento() == False]
+                return msg_read_success(list(evento))
+            
+            else:
+                evento = cls.select().where(cls.pkcodevento == pkcodevento)
+                evento = [model_to_dict(e) for e in evento if e.inativa_evento() == False]
+                return msg_read_success(list(evento))
             
         except Exception as error:
             return msg_read_error(error)
@@ -47,57 +54,53 @@ class Evento(EventoModel):
             
     #traz todos os eventos ativos e tambem se o usuario participa desse evento
     @classmethod
-    def read_eventos(cls, pkcodusuario):
+    def read_eventos(cls, pkcodusuario, categoria):
 
         try:
-            eventos = (cls
+
+            if categoria:
+                
+                eventos = (cls
                         .select()
-                        .where((cls.ativo == 1)))
+                        .where((cls.ativo == 1) & (cls.categoria == categoria)))
 
-            eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
+                eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
 
-            for evento in eventos:
+                for evento in eventos:
 
-                participa = (EventoUsuarioModel
-                            .select(Case(fn.COUNT(EventoUsuarioModel.evento), ((0, "false"),(1, "true"))).alias("participa"))
-                            .where((EventoUsuarioModel.usuario == pkcodusuario) & 
-                                   (EventoUsuarioModel.evento == evento["pkcodevento"]))
-                            .dicts())
+                    participa = (EventoUsuarioModel
+                                .select(Case(fn.COUNT(EventoUsuarioModel.evento), ((0, "false"),(1, "true"))).alias("participa"))
+                                .where((EventoUsuarioModel.usuario == pkcodusuario) & 
+                                    (EventoUsuarioModel.evento == evento["pkcodevento"]))
+                                .dicts())
 
-                evento.update({"participa": participa[0]["participa"]})
+                    evento.update({"participa": participa[0]["participa"]})
 
-            return msg_read_success(list(eventos))
+                return msg_read_success(list(eventos))
+
+            else:
+
+                eventos = (cls
+                            .select()
+                            .where((cls.ativo == 1)))
+
+                eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
+
+                for evento in eventos:
+
+                    participa = (EventoUsuarioModel
+                                .select(Case(fn.COUNT(EventoUsuarioModel.evento), ((0, "false"),(1, "true"))).alias("participa"))
+                                .where((EventoUsuarioModel.usuario == pkcodusuario) & 
+                                    (EventoUsuarioModel.evento == evento["pkcodevento"]))
+                                .dicts())
+
+                    evento.update({"participa": participa[0]["participa"]})
+
+                return msg_read_success(list(eventos))
             
         except Exception as error:
             return msg_read_error(error)
     
-    #traz todos os eventos ativos por categoria e tambem se o usuario participa desse evento
-    @classmethod
-    def read_eventos_categoria(cls, pkcodusuario, categoria):
-
-        try:
-            eventos = (cls
-                        .select()
-                        .where((cls.ativo == 1) &
-                                (cls.categoria == categoria)))
-
-            eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
-
-            for evento in eventos:
-
-                participa = (EventoUsuarioModel
-                            .select(Case(fn.COUNT(EventoUsuarioModel.evento), ((0, "false"),(1, "true"))).alias("participa"))
-                            .where((EventoUsuarioModel.usuario == pkcodusuario) & 
-                                   (EventoUsuarioModel.evento == evento["pkcodevento"]))
-                            .dicts())
-
-                evento.update({"participa": participa[0]["participa"]})
-
-            return msg_read_success(list(eventos))
-            
-        except Exception as error:
-            return msg_read_error(error)
-
     #traz todos os eventos ativos
     @classmethod
     def read_eventos_publicos(cls):
@@ -116,54 +119,98 @@ class Evento(EventoModel):
     
     #eventos que o usuario criou e seus participantes
     @classmethod
-    def read_eventos_usuario(cls, pkcodusuario):
+    def read_eventos_usuario(cls, pkcodusuario, categoria):
 
         try:
-            eventos_usuario = (cls
+
+            if categoria:
+                eventos_usuario = (cls
                                 .select()
-                                .where(cls.criador == pkcodusuario))
+                                .where(cls.criador == pkcodusuario) & (cls.categoria == categoria))
 
-            eventos_usuario = [model_to_dict(e) for e in eventos_usuario if e.inativa_evento() == False]
+                eventos_usuario = [model_to_dict(e) for e in eventos_usuario if e.inativa_evento() == False]
 
-            for evento_usuario in eventos_usuario:
-                
-                usuarios_evento = (UsuarioModel
-                                    .select(UsuarioModel.nome,
-                                            UsuarioModel.email,
-                                            UsuarioModel.telefone)
-                                    .join(EventoUsuarioModel, on=(EventoUsuarioModel.usuario == UsuarioModel.pkcodusuario))
-                                    .where(evento_usuario["pkcodevento"] == EventoUsuarioModel.evento)
-                                    .dicts())
-                
-                evento_usuario.update({"voluntarios": [usuario for usuario in usuarios_evento]})
-                
-            return msg_read_success(list(eventos_usuario))
+                for evento_usuario in eventos_usuario:
+                    
+                    usuarios_evento = (UsuarioModel
+                                        .select(UsuarioModel.nome,
+                                                UsuarioModel.email,
+                                                UsuarioModel.telefone)
+                                        .join(EventoUsuarioModel, on=(EventoUsuarioModel.usuario == UsuarioModel.pkcodusuario))
+                                        .where(evento_usuario["pkcodevento"] == EventoUsuarioModel.evento)
+                                        .dicts())
+                    
+                    evento_usuario.update({"voluntarios": [usuario for usuario in usuarios_evento]})
+                    
+                return msg_read_success(list(eventos_usuario))
+
+            else:
+                eventos_usuario = (cls
+                                    .select()
+                                    .where(cls.criador == pkcodusuario))
+
+                eventos_usuario = [model_to_dict(e) for e in eventos_usuario if e.inativa_evento() == False]
+
+                for evento_usuario in eventos_usuario:
+                    
+                    usuarios_evento = (UsuarioModel
+                                        .select(UsuarioModel.nome,
+                                                UsuarioModel.email,
+                                                UsuarioModel.telefone)
+                                        .join(EventoUsuarioModel, on=(EventoUsuarioModel.usuario == UsuarioModel.pkcodusuario))
+                                        .where(evento_usuario["pkcodevento"] == EventoUsuarioModel.evento)
+                                        .dicts())
+                    
+                    evento_usuario.update({"voluntarios": [usuario for usuario in usuarios_evento]})
+                    
+                return msg_read_success(list(eventos_usuario))
             
         except Exception as error:
             return msg_read_error(error)
     
     #eventos que o usuario participa e a qtd de voluntarios
     @classmethod
-    def read_eventos_usuario_participacao(cls, pkcodusuario):
+    def read_eventos_usuario_participacao(cls, pkcodusuario, categoria):
 
         try:
             
-            eventos = (cls
+            if categoria:
+
+                eventos = (cls
                         .select(cls)
                         .join(EventoUsuarioModel, on=(EventoUsuarioModel.evento == cls.pkcodevento))
-                        .where(EventoUsuarioModel.usuario == pkcodusuario))
+                        .where(EventoUsuarioModel.usuario == pkcodusuario) & (cls.categoria == categoria))
             
-            eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
+                eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
 
-            for evento in eventos:
+                for evento in eventos:
 
-                qtd_voluntarios = (EventoUsuarioModel
-                                    .select(fn.COUNT(EventoUsuarioModel.pkcodeventousuario).alias("qtd"))
-                                    .where(EventoUsuarioModel.evento == evento["pkcodevento"]))
+                    qtd_voluntarios = (EventoUsuarioModel
+                                        .select(fn.COUNT(EventoUsuarioModel.pkcodeventousuario).alias("qtd"))
+                                        .where(EventoUsuarioModel.evento == evento["pkcodevento"]))
+                    
+                    evento.update({"qtd_voluntarios": qtd_voluntarios.scalar()})
+
+                return msg_read_success(list(eventos))
+            
+            else:
+
+                eventos = (cls
+                            .select(cls)
+                            .join(EventoUsuarioModel, on=(EventoUsuarioModel.evento == cls.pkcodevento))
+                            .where(EventoUsuarioModel.usuario == pkcodusuario))
                 
-                evento.update({"qtd_voluntarios": qtd_voluntarios.scalar()})
+                eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
 
-            return msg_read_success(list(eventos))
+                for evento in eventos:
+
+                    qtd_voluntarios = (EventoUsuarioModel
+                                        .select(fn.COUNT(EventoUsuarioModel.pkcodeventousuario).alias("qtd"))
+                                        .where(EventoUsuarioModel.evento == evento["pkcodevento"]))
+                    
+                    evento.update({"qtd_voluntarios": qtd_voluntarios.scalar()})
+
+                return msg_read_success(list(eventos))
             
         except Exception as error:
             return msg_read_error(error)
