@@ -121,7 +121,7 @@ class Evento(EventoModel):
         try:
             eventos_usuario = (cls
                                 .select()
-                                .where(cls.criador == pkcodusuario, cls.ativo == 1))
+                                .where(cls.criador == pkcodusuario))
 
             eventos_usuario = [model_to_dict(e) for e in eventos_usuario if e.inativa_evento() == False]
 
