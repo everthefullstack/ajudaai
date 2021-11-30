@@ -71,6 +71,33 @@ class Evento(EventoModel):
         except Exception as error:
             return msg_read_error(error)
     
+    #traz todos os eventos ativos por categoria e tambem se o usuario participa desse evento
+    @classmethod
+    def read_eventos_categoria(cls, pkcodusuario, categoria):
+
+        try:
+            eventos = (cls
+                        .select()
+                        .where((cls.ativo == 1) &
+                                (cls.categoria == categoria)))
+
+            eventos = [model_to_dict(e) for e in eventos if e.inativa_evento() == False]
+
+            for evento in eventos:
+
+                participa = (EventoUsuarioModel
+                            .select(Case(fn.COUNT(EventoUsuarioModel.evento), ((0, "false"),(1, "true"))).alias("participa"))
+                            .where((EventoUsuarioModel.usuario == pkcodusuario) & 
+                                   (EventoUsuarioModel.evento == evento["pkcodevento"]))
+                            .dicts())
+
+                evento.update({"participa": participa[0]["participa"]})
+
+            return msg_read_success(list(eventos))
+            
+        except Exception as error:
+            return msg_read_error(error)
+
     #traz todos os eventos ativos
     @classmethod
     def read_eventos_publicos(cls):
@@ -169,6 +196,7 @@ class Evento(EventoModel):
         except:
             msg_update_error("Evento")
     
+    #toda a chamada de eventos tem essa função, que desativa os eventos que passaram do prazo
     def inativa_evento(self):
 
         if datetime.datetime.now() >= self.termino:

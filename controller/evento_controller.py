@@ -65,6 +65,22 @@ def get_eventos():
 
 @jwt_required()
 @blacklist()
+def get_eventos_categoria():
+
+    try:
+
+        if request.method == "POST":
+
+            eventos = Evento.read_eventos_categoria(pkcodusuario=get_jwt_identity(), 
+                                                    categoria=request.get_json()["categoria"])
+            return eventos
+
+    except Exception as error:
+
+        return msg_server_error(error)
+
+@jwt_required()
+@blacklist()
 def get_eventos_usuario():
 
     try:
